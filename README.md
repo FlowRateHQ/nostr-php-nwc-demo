@@ -1,12 +1,12 @@
 # nostr-php-nwc-demo
 
-Connect to a Lightning node and check your balance — using [nostr-php-nwc](https://github.com/dukeh3/nostr-php-nwc) and the Nostr Wallet Connect protocol (NIP-47).
+Demos for [nostr-php-nwc](https://github.com/dukeh3/nostr-php-nwc) — a PHP client for the Nostr Wallet Connect protocol (NIP-47).
 
 ## Prerequisites
 
-- PHP 8.1+ with `gmp` and `curl` extensions
+- PHP 8.1+ with `gmp`, `curl`, and `sodium` extensions
 - Composer
-- An NWC-compatible wallet (e.g. [ldk-controller](https://github.com/dukeh3/ldk-controller))
+- An NWC-compatible wallet (e.g. [Alby Hub](https://github.com/getAlby/hub))
 
 ## Setup
 
@@ -18,39 +18,34 @@ cp .env.example .env
 Edit `.env` with your NWC connection URI:
 
 ```
-NWC_URI=nostr+walletconnect://SERVICE_PUBKEY?relay=wss%3A%2F%2Frelay.example.com&secret=YOUR_SECRET
+NWC_URI=nostr+walletconnect://WALLET_PUBKEY?relay=wss://relay.example.com&secret=YOUR_SECRET
 ```
 
-## Run
+## Demos
+
+### CLI: Basic info and balance
 
 ```bash
-php demo.php
+php cli/demo.php
 ```
 
-Example output:
+Connects to the wallet via NWC, queries `get_info` and `get_balance`.
 
+### Web: Send and receive UI
+
+```bash
+php -S localhost:18080 -t web/
 ```
-nostr-php-nwc demo
-==================
 
-Wallet pubkey : db0a960a68b14fcd4bf81b7a456e5d94e122f0416db6d3e9cd5c6f2c945e06d7
-Relay         : ws://172.16.10.101:7777
+Open http://localhost:18080. The web app provides:
 
-→ get_info
-  Alias   : alice
-  Network : regtest
-  Methods : get_info, get_balance, pay_invoice, make_invoice, list_transactions
-
-→ get_balance
-  Balance : 500,000 sats
-          : 500,000,000 msats
-
-Done.
-```
+- **Wallet balance** displayed at the top
+- **Receive** — creates a bolt11 invoice via `make_invoice`, then polls `lookup_invoice` until payment is detected
+- **Send** — pays a bolt11 invoice via `pay_invoice`
 
 ## How It Works
 
-The demo uses NWC (NIP-47) to talk to a Lightning node over a Nostr relay:
+NWC (NIP-47) communicates with a Lightning wallet over Nostr relays:
 
 1. Parses the NWC URI to get the wallet's pubkey, relay URL, and client secret
 2. Opens a WebSocket to the relay
@@ -58,8 +53,21 @@ The demo uses NWC (NIP-47) to talk to a Lightning node over a Nostr relay:
 4. Receives encrypted responses (kind 23195) from the wallet service
 5. Decrypts and displays the results
 
-No REST API, no API keys — just Nostr events over a relay.
+Encryption uses NIP-44 v2. No REST API, no API keys — just Nostr events over a relay.
 
 ## License
 
-MIT
+Copyright (C) 2025
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.

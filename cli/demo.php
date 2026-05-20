@@ -3,7 +3,7 @@
 declare(strict_types=1);
 error_reporting(E_ALL & ~E_DEPRECATED);
 
-require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 use dsbaars\nostr\Nip47\NwcClient;
 use dsbaars\nostr\Nip47\NwcUri;
@@ -11,7 +11,7 @@ use dsbaars\nostr\Nip47\Exception\NwcException;
 
 // ─── Load NWC URI from .env or environment ───────────────────────────────────
 
-$envFile = __DIR__ . '/.env';
+$envFile = __DIR__ . '/../.env';
 if (file_exists($envFile)) {
     foreach (file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
         if (str_starts_with(trim($line), '#')) continue;
